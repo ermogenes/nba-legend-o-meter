@@ -107,6 +107,3 @@ dist
 # OS metadata
 .DS_Store
 Thumbs.db
-
-# Custom app directories
-/data/
