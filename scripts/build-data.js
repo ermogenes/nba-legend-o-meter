@@ -18,10 +18,39 @@ const FETCH_HEADERS = {
     'Cache-Control': 'no-cache'
 };
 
-async function fetchNbaData(url) {
-    const res = await fetch(url, { headers: FETCH_HEADERS });
-    if (!res.ok) throw new Error(`NBA API Error: ${res.status}`);
-    return await res.json();
+const RETRY_LIMIT = 3;
+const RETRY_DELAY = 5000; // 5 seconds initial delay
+
+async function fetchNbaData(url, retries = RETRY_LIMIT) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            console.log(`[Fetch] Attempt ${i + 1}/${retries} to ${url.substring(0, 50)}...`);
+            
+            // Setting a timeout abort controller to prevent hanging forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+            
+            const res = await fetch(url, { 
+                headers: FETCH_HEADERS,
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error(`NBA API HTTP Error: ${res.status}`);
+            return await res.json();
+            
+        } catch (err) {
+            console.warn(`[Fetch Warning] Attempt ${i + 1} failed: ${err.message}`);
+            if (i === retries - 1) {
+                throw new Error(`Failed to fetch NBA data after ${retries} attempts: ${err.message}`);
+            }
+            // Exponential backoff
+            const delay = RETRY_DELAY * Math.pow(2, i);
+            console.log(`[Fetch] Waiting ${delay}ms before retrying...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
 }
 
 // Normalize value between min and max
@@ -76,10 +105,13 @@ async function fetchSophomores() {
     // Year 2 (Sophomore class of 2025-26)
     const urlY2 = 'https://stats.nba.com/stats/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=Sophomore&PlayerPosition=&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=';
 
-    const [dataY1, dataY2] = await Promise.all([
-        fetchNbaData(urlY1),
-        fetchNbaData(urlY2)
-    ]);
+    // Process sequential to avoid triggering immediate rate limits
+    const dataY1 = await fetchNbaData(urlY1);
+    
+    console.log("Waiting 3s to respect rate limits...");
+    await new Promise(res => setTimeout(res, 3000));
+    
+    const dataY2 = await fetchNbaData(urlY2);
 
     const headersY1 = dataY1.resultSets[0].headers;
     const rowsY1 = dataY1.resultSets[0].rowSet;
