@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Legend-O-Meter 🏀</title>
+    <!-- NBA Live Font/Typography -> Google Fonts fallback -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- TensorFlow.js core & layers -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+</head>
+<body class="dark-theme">
+    <div class="glass-container app-wrapper">
+        <header>
+            <h1>NBA Legend-O-Meter <span class="badge">Live 25/26</span></h1>
+            <p>A I.A. analisa as estatísticas dos Sophomores de 2024-25 vs. as temporadas de estreia de Lendas Históricas da NBA para prever o seu teto de carreira.</p>
+        </header>
+
+        <main>
+            <!-- Loading State -->
+            <section id="state-loading" class="state-section active">
+                <div class="spinner"></div>
+                <p>Carregando Modelo TensorFlow.js...</p>
+            </section>
+
+            <!-- Search State -->
+            <section id="state-search" class="state-section hidden">
+                <div class="search-box">
+                    <label for="player-select">Selecione um Sophomore de 2025-26:</label>
+                    <select id="player-select" autocomplete="off">
+                        <option value="" disabled selected>Carregando jogadores...</option>
+                    </select>
+                    <button id="btn-predict" class="btn-primary" disabled>Analisar Teto de Carreira</button>
+                </div>
+            </section>
+
+            <!-- Result State -->
+            <section id="state-result" class="state-section hidden">
+                <div class="result-card">
+                    <div class="card-header">
+                        <div class="team-logo-container">
+                            <img id="res-team-logo" src="" alt="Logo do Time" onerror="this.style.display='none'">
+                        </div>
+                        <div class="player-photo-container">
+                            <img id="res-photo" src="" alt="Foto do Jogador" onerror="this.style.display='none'">
+                        </div>
+                        <div class="player-info">
+                            <h2 id="res-name">Nome do Jogador</h2>
+                            <p class="stats-summary" id="res-stats">00.0 PTS | 00.0 TRB | 00.0 AST</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h3>Comparativo de Vereditos da IA</h3>
+                        <div class="comparison-grid">
+                            <!-- Year 1 -->
+                            <div class="comparison-col">
+                                <h4>Ano 1 (Calouro)</h4>
+                                <div class="tier-display">
+                                    <span id="res-tier-y1" class="tier-badge" data-tier="S">-</span>
+                                </div>
+                                <p class="confidence">Confiança: <span id="res-conf-y1">00.0%</span></p>
+                                <p class="tier-desc" id="res-desc-y1">-</p>
+                            </div>
+                            
+                            <!-- Year 2 -->
+                            <div class="comparison-col">
+                                <h4>Ano 2 (Atual)</h4>
+                                <div class="tier-display">
+                                    <span id="res-tier-y2" class="tier-badge" data-tier="S">-</span>
+                                </div>
+                                <p class="confidence">Confiança: <span id="res-conf-y2">00.0%</span></p>
+                                <p class="tier-desc" id="res-desc-y2">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button id="btn-reset" class="btn-secondary">Analisar Outro Jogador</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Desenvolvido com TensorFlow.js (SSG)</p>
+        </footer>
+    </div>
+
+    <!-- Main Logic -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

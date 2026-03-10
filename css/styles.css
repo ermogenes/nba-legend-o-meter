@@ -1,0 +1,367 @@
+:root {
+    --bg-dark: #0f172a;
+    --navy: #1e293b;
+    --nba-red: #c9082a;
+    --nba-blue: #17408b;
+    --nba-white: #ffffff;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Tier Colors */
+    --tier-s-color: #fbbf24; /* Gold */
+    --tier-a-color: #38bdf8; /* Blue */
+    --tier-b-color: #4ade80; /* Green */
+    --tier-c-color: #f87171; /* Red */
+    --tier-bust-color: #94a3b8; /* Gray */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.dark-theme {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(23, 64, 139, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(201, 8, 42, 0.15) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.app-wrapper {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 32px 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: linear-gradient(135deg, var(--nba-red), var(--nba-blue));
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.state-section {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.state-section.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Loading */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--glass-border);
+    border-top-color: var(--nba-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+#state-loading p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Search */
+.search-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-box label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+select {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+select:focus {
+    border-color: var(--nba-blue);
+    box-shadow: 0 0 0 3px rgba(23, 64, 139, 0.3);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--nba-blue);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #1a4ab0;
+    transform: translateY(-2px);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    background-color: var(--navy);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Result Card */
+.result-card {
+    width: 100%;
+    background: var(--navy);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+}
+
+.card-header {
+    position: relative;
+    padding: 48px 20px 20px;
+    text-align: center;
+    background: linear-gradient(to bottom, rgba(23, 64, 139, 0.8), var(--navy));
+}
+
+.team-logo-container {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.8;
+}
+
+.team-logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.player-photo-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    border: 3px solid var(--glass-border);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.player-photo-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.player-info h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.stats-summary {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 24px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.card-body h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.tier-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--bg-dark);
+    margin-bottom: 16px;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.tier-badge[data-tier="S"] { background: var(--tier-s-color); box-shadow: 0 0 20px var(--tier-s-color); }
+.tier-badge[data-tier="A"] { background: var(--tier-a-color); box-shadow: 0 0 15px var(--tier-a-color); }
+.tier-badge[data-tier="B"] { background: var(--tier-b-color); }
+.tier-badge[data-tier="C"] { background: var(--tier-c-color); }
+.tier-badge[data-tier="Bust"] { background: var(--tier-bust-color); }
+
+.confidence {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.confidence span {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.tier-desc {
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.card-footer {
+    padding: 16px 20px;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+}
+
+footer p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+/* Adding to the end of styles.css */
+.comparison-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.comparison-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comparison-col h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.comparison-col .tier-badge {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.comparison-col .confidence {
+    font-size: 12px;
+}
+
+.comparison-col .tier-desc {
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--text-secondary);
+}
